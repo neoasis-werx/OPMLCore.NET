@@ -1,7 +1,26 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>OPMLCore.NET</PackageId>
+    <PackageVersion>1.0.0</PackageVersion>
+    <Authors>fnya,neoasis-werx</Authors>
+    <Company>neoasis-werx</Company>
+    <Product>OPMLCore.NET</Product>
+    <Description>OPMLCore.NET is an OPML Parser which is easy to use for .NET Core Applications. It supports parsing and creating OPML files with a simple and intuitive API.</Description>
+    <PackageTags>opml;parser;xml;rss;feeds;dotnet;core</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/neoasis-werx/OPMLCore.NET</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/neoasis-werx/OPMLCore.NET</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <Copyright>Copyright (c) neoasis-werx,fnya</Copyright>
+    <PackageReleaseNotes>Initial release of OPMLCore.NET - A simple and easy-to-use OPML parser for .NET applications.</PackageReleaseNotes>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 
 </Project>

@@ -4,8 +4,10 @@ using System.Xml;
 using System.Collections.Generic;
 
 namespace OPMLCore.NET {
-    public class Outline 
+    public class Outline
     {
+
+
         ///<summary>
         /// Text of the XML file (required)
         ///</summary>
@@ -24,7 +26,7 @@ namespace OPMLCore.NET {
         ///<summary>
         /// outline node was created
         ///</summary>
-        public DateTime? Created { get; set; } = null;
+        public DateTime? Created { get; set; }
 
         ///<summary>
         /// Categories
@@ -47,7 +49,7 @@ namespace OPMLCore.NET {
         public string Language { get; set; }
 
         ///<summary>
-        /// Title 
+        /// Title
         ///</summary>
         public string Title { get; set; }
 
@@ -57,7 +59,7 @@ namespace OPMLCore.NET {
         public string Type { get; set; }
 
         ///<summary>
-        /// Version of RSS. 
+        /// Version of RSS.
         /// RSS1 for RSS1.0. RSS for 0.91, 0.92 or 2.0.
         ///</summary>
         public string Version { get; set; }
@@ -75,23 +77,23 @@ namespace OPMLCore.NET {
         ///<summary>
         /// Constructor
         ///</summary>
-        public Outline() 
+        public Outline()
         {
 
         }
-    
+
 
         ///<summary>
         /// Constructor
         ///</summary>
         /// <param name="element">element of Head</param>
-        public Outline(XmlElement element) 
+        public Outline(XmlElement element)
         {
             Text = element.GetAttribute("text");
             IsComment = element.GetAttribute("isComment");
             IsBreakpoint = element.GetAttribute("isBreakpoint");
             Created = GetDateTimeAttribute(element, "created");
-            Category = GetCategoriesAtrribute(element, "category");
+            Category = GetCategoriesAttribute(element, "category");
             Description  = element.GetAttribute("description");
             HTMLUrl = element.GetAttribute("htmlUrl");
             Language = element.GetAttribute("language");
@@ -99,7 +101,7 @@ namespace OPMLCore.NET {
             Type = element.GetAttribute("type");
             Version = element.GetAttribute("version");
             XMLUrl = element.GetAttribute("xmlUrl");
-   
+
             if (element.HasChildNodes) {
                 foreach (XmlNode child in element.ChildNodes)
                 {
@@ -111,60 +113,60 @@ namespace OPMLCore.NET {
             }
         }
 
-        private DateTime? GetDateTimeAttribute(XmlElement element, string name)
+        private static DateTime? GetDateTimeAttribute(XmlElement element, string name)
         {
             string dt = element.GetAttribute(name);
 
             try {
-                return DateTime.Parse(dt);
+                return DateTime.Parse(dt, Opml.MyCultureInfo);
             } catch {
                 return null;
             }
         }
 
-        private List<string> GetCategoriesAtrribute(XmlElement element, string name)
+        private static List<string> GetCategoriesAttribute(XmlElement element, string name)
         {
                 List<string> list = new List<string>();
                 var items = element.GetAttribute(name).Split(',');
-                foreach(var item in items) 
+                foreach(var item in items)
                 {
                     list.Add(item.Trim());
                 }
                 return list;
         }
 
-        public override string ToString() 
+        public override string ToString()
         {
             StringBuilder buf = new StringBuilder();
             buf.Append("<outline");
-            buf.Append(GetAtrributeString("text", Text));
-            buf.Append(GetAtrributeString("isComment", IsComment));
-            buf.Append(GetAtrributeString("isBreakpoint", IsBreakpoint));
-            buf.Append(GetAtrributeString("created", Created));
-            buf.Append(GetAtrributeString("category", Category));
-            buf.Append(GetAtrributeString("description", Description));
-            buf.Append(GetAtrributeString("htmlUrl", HTMLUrl));
-            buf.Append(GetAtrributeString("language", Language));
-            buf.Append(GetAtrributeString("title", Title));
-            buf.Append(GetAtrributeString("type", Type));
-            buf.Append(GetAtrributeString("version", Version));
-            buf.Append(GetAtrributeString("xmlUrl", XMLUrl));
+            buf.Append(GetAttributeString("text", Text));
+            buf.Append(GetAttributeString("isComment", IsComment));
+            buf.Append(GetAttributeString("isBreakpoint", IsBreakpoint));
+            buf.Append(GetAttributeString("created", Created));
+            buf.Append(GetAttributeString("category", Category));
+            buf.Append(GetAttributeString("description", Description));
+            buf.Append(GetAttributeString("htmlUrl", HTMLUrl));
+            buf.Append(GetAttributeString("language", Language));
+            buf.Append(GetAttributeString("title", Title));
+            buf.Append(GetAttributeString("type", Type));
+            buf.Append(GetAttributeString("version", Version));
+            buf.Append(GetAttributeString("xmlUrl", XMLUrl));
 
-            if (Outlines.Count > 0) 
+            if (Outlines.Count > 0)
             {
                 buf.Append(">\r\n");
                 foreach (Outline outline in Outlines)
                 {
-                    buf.Append(outline.ToString());        
+                    buf.Append(outline);
                 }
-                buf.Append("</outline>\r\n");   
+                buf.Append("</outline>\r\n");
             } else {
-                buf.Append(" />\r\n");    
+                buf.Append(" />\r\n");
             }
             return buf.ToString();
         }
 
-        private string GetAtrributeString(string name, string value)
+        private static string GetAttributeString(string name, string value)
         {
             if (string.IsNullOrEmpty(value))
             {
@@ -174,17 +176,17 @@ namespace OPMLCore.NET {
             }
         }
 
-        private string GetAtrributeString(string name, DateTime? value)
+        private static string GetAttributeString(string name, DateTime? value)
         {
-            if (value == null) 
+            if (value == null)
             {
                 return string.Empty;
             } else {
                 return $" {name}=\"{value?.ToString("R")}\"";
             }
-        }    
+        }
 
-        private string GetAtrributeString(string name, List<string> value)     
+        private static string GetAttributeString(string name, List<string> value)
         {
             if (value.Count == 0) {
                 return string.Empty;
@@ -196,8 +198,8 @@ namespace OPMLCore.NET {
                 buf.Append(item);
                 buf.Append(",");
             }
-            
-            return $" {name}=\"{buf.Remove(buf.Length - 1, 1).ToString()}\"";
-        } 
+
+            return $" {name}=\"{buf.Remove(buf.Length - 1, 1)}\"";
+        }
     }
 }

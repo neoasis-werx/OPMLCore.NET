@@ -1,9 +1,13 @@
 using System;
+using System.Globalization;
 using System.Text;
 using System.Xml;
 
 namespace OPMLCore.NET {
     public class Opml {
+
+        public static readonly CultureInfo MyCultureInfo = new("en-US");
+
         ///<summary>
         /// Version of OPML
         ///</summary>
@@ -21,13 +25,13 @@ namespace OPMLCore.NET {
 
         ///<summary>
         /// Body of OPML
-        ///</summary>        
+        ///</summary>
         public Body Body { get; set;} = new Body();
 
         ///<summary>
         /// Constructor
         ///</summary>
-        public Opml() 
+        public Opml()
         {
 
         }
@@ -36,7 +40,7 @@ namespace OPMLCore.NET {
         /// Constructor
         ///</summary>
         /// <param name="location">Location of the OPML file</param>
-        public Opml(string location) 
+        public Opml(string location)
         {
             XmlDocument doc = new XmlDocument();
             doc.Load(location);
@@ -47,16 +51,16 @@ namespace OPMLCore.NET {
         /// Constructor
         ///</summary>
         /// <param name="doc">XMLDocument of the OPML</param>
-        public Opml(XmlDocument doc) 
+        public Opml(XmlDocument doc)
         {
             readOpmlNodes(doc);
-        }      
+        }
 
 
         private void readOpmlNodes(XmlDocument doc) {
-            foreach (XmlNode nodes in doc) 
+            foreach (XmlNode nodes in doc)
             {
-                if (nodes.Name.Equals("opml", StringComparison.CurrentCultureIgnoreCase)) 
+                if (nodes.Name.Equals("opml", StringComparison.CurrentCultureIgnoreCase))
                 {
                     foreach (XmlNode childNode in nodes)
                     {

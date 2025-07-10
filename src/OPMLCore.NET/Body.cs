@@ -4,7 +4,7 @@ using System.Xml;
 using System.Collections.Generic;
 
 namespace OPMLCore.NET {
-    public class Body 
+    public class Body
     {
         ///<summary>
         /// Outline list
@@ -23,7 +23,7 @@ namespace OPMLCore.NET {
         /// Constructor
         ///</summary>
         /// <param name="element">element of Body</param>
-        public Body(XmlElement element) 
+        public Body(XmlElement element)
         {
             if (element.Name.Equals("body", StringComparison.CurrentCultureIgnoreCase))
             {
@@ -36,13 +36,13 @@ namespace OPMLCore.NET {
                 }
             }
         }
-        
+
         public override string ToString() {
             StringBuilder buf = new StringBuilder();
             buf.Append("<body>\r\n");
             foreach (Outline outline in Outlines)
             {
-                buf.Append(outline.ToString());
+                buf.Append(outline);
             }
             buf.Append("</body>\r\n");
 
