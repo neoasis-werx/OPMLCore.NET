@@ -85,74 +85,72 @@ namespace OPMLCore.NET {
         /// <param name="element">element of Head</param>
         public Head(XmlElement element)
         {
-            if (element.Name.Equals("head", StringComparison.CurrentCultureIgnoreCase))
+            if (element.Name == "head")
             {
                 foreach (XmlNode node in element.ChildNodes)
                 {
-                    Title = GetStringValue(node, "title", Title);
-                    DateCreated = GetDateTimeValue(node, "dateCreated", DateCreated);
-                    DateModified = GetDateTimeValue(node, "dateModified", DateModified);
-                    OwnerName = GetStringValue(node, "ownerName", OwnerName);
-                    OwnerEmail = GetStringValue(node, "ownerEmail", OwnerEmail);
-                    OwnerId = GetStringValue(node, "ownerId", OwnerId);
-                    Docs = GetStringValue(node, "docs", Docs);
-                    ExpansionState = GetExpansionState(node, "expansionState", ExpansionState);
-                    VertScrollState = GetStringValue(node, "vertScrollState", VertScrollState);
-                    WindowTop = GetStringValue(node, "windowTop", WindowTop);
-                    WindowLeft = GetStringValue(node, "windowLeft", WindowLeft);
-                    WindowBottom = GetStringValue(node, "windowBottom", WindowBottom);
-                    WindowRight = GetStringValue(node, "windowRight", WindowRight);
+                    if (node.NodeType != XmlNodeType.Element) continue;
+                    switch (node.Name)
+                    {
+                        case "title":
+                            Title = node.InnerText;
+                            break;
+                        case "dateCreated":
+                            DateCreated = ParseDateTime(node.InnerText);
+                            break;
+                        case "dateModified":
+                            DateModified = ParseDateTime(node.InnerText);
+                            break;
+                        case "ownerName":
+                            OwnerName = node.InnerText;
+                            break;
+                        case "ownerEmail":
+                            OwnerEmail = node.InnerText;
+                            break;
+                        case "ownerId":
+                            OwnerId = node.InnerText;
+                            break;
+                        case "docs":
+                            Docs = node.InnerText;
+                            break;
+                        case "expansionState":
+                            ExpansionState = ParseExpansionState(node.InnerText);
+                            break;
+                        case "vertScrollState":
+                            VertScrollState = node.InnerText;
+                            break;
+                        case "windowTop":
+                            WindowTop = node.InnerText;
+                            break;
+                        case "windowLeft":
+                            WindowLeft = node.InnerText;
+                            break;
+                        case "windowBottom":
+                            WindowBottom = node.InnerText;
+                            break;
+                        case "windowRight":
+                            WindowRight = node.InnerText;
+                            break;
+                    }
                 }
             }
         }
 
-        private static string GetStringValue(XmlNode node, string name, string value)
+        private static DateTime? ParseDateTime(string value)
         {
-            if (node.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase))
-            {
-                return node.InnerText;
-            } else if (!node.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase)) {
-                return value;
-            } else {
-                return string.Empty;
-            }
+            if (string.IsNullOrEmpty(value)) return null;
+            try { return DateTime.Parse(value, Opml.MyCultureInfo); }
+            catch { return null; }
         }
-
-        private static DateTime? GetDateTimeValue(XmlNode node, string name, DateTime? value)
+        private static List<string> ParseExpansionState(string value)
         {
-            if (node.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase))
-            {
-                try {
-                     return DateTime.Parse(node.InnerText, Opml.MyCultureInfo);
-                } catch
-                {
-                    return null;
-                }
-            } else if (!node.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase)){
-                return value;
-            } else {
-                return null;
-            }
-        }
-
-        private static List<string> GetExpansionState(XmlNode node, string name, List<string> value)
-        {
-            if (node.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase))
-            {
-                List<string> list = new List<string>();
-                var items = node.InnerText.Split(',');
-                foreach(var item in items)
-                {
+            if (string.IsNullOrEmpty(value)) return new List<string>();
+            var items = value.Split(',');
+            var list = new List<string>();
+            foreach (var item in items)
+                if (!string.IsNullOrWhiteSpace(item))
                     list.Add(item.Trim());
-                }
-                return list;
-
-            } else if (!node.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase))
-            {
-                return value;
-            } else {
-                return new List<string>();
-            }
+            return list;
         }
 
         public override string ToString()

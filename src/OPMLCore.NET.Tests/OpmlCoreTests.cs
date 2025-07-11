@@ -49,34 +49,34 @@ namespace OPMLCore.NET.Tests;
          doc.LoadXml(xml.ToString());
          Opml opml = new Opml(doc);
 
-         Assert.True(opml.Head.Title == "mySubscriptions.opml");
-         Assert.True(opml.Head.DateCreated == DateTime.Parse("Sat, 18 Jun 2005 12:11:52 GMT", Opml.MyCultureInfo));
-         Assert.True(opml.Head.DateModified == DateTime.Parse("Tue, 02 Aug 2005 21:42:48 GMT", Opml.MyCultureInfo));
-         Assert.True(opml.Head.OwnerName == "fnya");
-         Assert.True(opml.Head.OwnerEmail == "fnya@example.com");
-         Assert.True(opml.Head.OwnerId == "http://news.com.com/");
-         Assert.True(opml.Head.Docs == "http://news.com.com/");
-         Assert.True(opml.Head.ExpansionState.SequenceEqual("1,6,13,16,18,20".Split(',')));
-         Assert.True(opml.Head.VertScrollState == "1");
-         Assert.True(opml.Head.WindowTop == "106");
-         Assert.True(opml.Head.WindowLeft == "106");
-         Assert.True(opml.Head.WindowBottom == "558");
-         Assert.True(opml.Head.WindowRight == "479");
+         Assert.That(opml.Head.Title, Is.EqualTo("mySubscriptions.opml"));
+         Assert.That(opml.Head.DateCreated, Is.EqualTo(DateTime.Parse("Sat, 18 Jun 2005 12:11:52 GMT", Opml.MyCultureInfo)));
+         Assert.That(opml.Head.DateModified, Is.EqualTo(DateTime.Parse("Tue, 02 Aug 2005 21:42:48 GMT", Opml.MyCultureInfo)));
+         Assert.That(opml.Head.OwnerName, Is.EqualTo("fnya"));
+         Assert.That(opml.Head.OwnerEmail, Is.EqualTo("fnya@example.com"));
+         Assert.That(opml.Head.OwnerId, Is.EqualTo("http://news.com.com/"));
+         Assert.That(opml.Head.Docs, Is.EqualTo("http://news.com.com/"));
+         Assert.That(opml.Head.ExpansionState, Is.EqualTo("1,6,13,16,18,20".Split(',')));
+         Assert.That(opml.Head.VertScrollState, Is.EqualTo("1"));
+         Assert.That(opml.Head.WindowTop, Is.EqualTo("106"));
+         Assert.That(opml.Head.WindowLeft, Is.EqualTo("106"));
+         Assert.That(opml.Head.WindowBottom, Is.EqualTo("558"));
+         Assert.That(opml.Head.WindowRight, Is.EqualTo("479"));
 
          foreach (var outline in opml.Body.Outlines)
          {
-             Assert.True(outline.Text == "CNET News.com");
-             Assert.True(outline.IsComment == "true");
-             Assert.True(outline.IsBreakpoint == "true");
-             Assert.True(outline.Created == DateTime.Parse("Tue, 02 Aug 2005 21:42:48 GMT", Opml.MyCultureInfo));
-             Assert.True(outline.Category.SequenceEqual("/Harvard/Berkman,/Politics".Split(',')));
-             Assert.True(outline.Description == "Tech news and business reports by CNET News.com.");
-             Assert.True(outline.HTMLUrl == "http://news.com.com/");
-             Assert.True(outline.Language == "unknown");
-             Assert.True(outline.Title == "CNET News.com");
-             Assert.True(outline.Type == "rss");
-             Assert.True(outline.Version == "RSS2");
-             Assert.True(outline.XMLUrl == "http://news.com.com/2547-1_3-0-5.xml");
+             Assert.That(outline.Text, Is.EqualTo("CNET News.com"));
+             Assert.That(outline.IsComment, Is.EqualTo("true"));
+             Assert.That(outline.IsBreakpoint, Is.EqualTo("true"));
+             Assert.That(outline.Created, Is.EqualTo(DateTime.Parse("Tue, 02 Aug 2005 21:42:48 GMT", Opml.MyCultureInfo)));
+             Assert.That(outline.Category, Is.EqualTo("/Harvard/Berkman,/Politics".Split(',')));
+             Assert.That(outline.Description, Is.EqualTo("Tech news and business reports by CNET News.com."));
+             Assert.That(outline.HTMLUrl, Is.EqualTo("http://news.com.com/"));
+             Assert.That(outline.Language, Is.EqualTo("unknown"));
+             Assert.That(outline.Title, Is.EqualTo("CNET News.com"));
+             Assert.That(outline.Type, Is.EqualTo("rss"));
+             Assert.That(outline.Version, Is.EqualTo("RSS2"));
+             Assert.That(outline.XMLUrl, Is.EqualTo("http://news.com.com/2547-1_3-0-5.xml"));
          }
      }
 
@@ -108,9 +108,9 @@ namespace OPMLCore.NET.Tests;
          foreach (var outline in opml.Body.Outlines)
          {
              foreach(var childOutline in outline.Outlines) {
-                 Assert.True(childOutline.Text == "washingtonpost.com");
-                 Assert.True(childOutline.HTMLUrl == "http://www.washingtonpost.com");
-                 Assert.True(childOutline.XMLUrl == "http://www.washingtonpost.com/rss.xml");
+                 Assert.That(childOutline.Text, Is.EqualTo("washingtonpost.com"));
+                 Assert.That(childOutline.HTMLUrl, Is.EqualTo("http://www.washingtonpost.com"));
+                 Assert.That(childOutline.XMLUrl, Is.EqualTo("http://www.washingtonpost.com/rss.xml"));
              }
          }
      }
@@ -204,7 +204,7 @@ namespace OPMLCore.NET.Tests;
          xml.Append("</body>\r\n");
          xml.Append("</opml>");
 
-         Assert.True(opml.ToString() == xml.ToString());
+         Assert.That(opml.ToString(), Is.EqualTo(xml.ToString()));
 
      }
 
@@ -248,7 +248,7 @@ namespace OPMLCore.NET.Tests;
          xml.Append("</body>\r\n");
          xml.Append("</opml>");
 
-         Assert.True(opml.ToString() == xml.ToString());
+         Assert.That(opml.ToString(), Is.EqualTo(xml.ToString()));
      }
 
 

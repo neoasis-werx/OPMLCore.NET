@@ -27,11 +27,11 @@ namespace OPMLCore.NET {
         /// <param name="element">element of Body</param>
         public Body(XmlElement element)
         {
-            if (element.Name.Equals("body", StringComparison.CurrentCultureIgnoreCase))
+            if (element.Name == "body")
             {
                 foreach (XmlNode node in element.ChildNodes)
                 {
-                    if (node.Name.Equals("outline", StringComparison.CurrentCultureIgnoreCase))
+                    if (node.Name == "outline")
                     {
                         Outlines.Add(new Outline((XmlElement)node));
                     }

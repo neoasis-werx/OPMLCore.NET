@@ -105,7 +105,7 @@ namespace OPMLCore.NET {
             if (element.HasChildNodes) {
                 foreach (XmlNode child in element.ChildNodes)
                 {
-                    if (child.Name.Equals("outline", StringComparison.CurrentCultureIgnoreCase))
+                    if (child.Name == "outline")
                     {
                         Outlines.Add(new Outline((XmlElement) child));
                     }

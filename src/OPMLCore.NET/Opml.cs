@@ -58,23 +58,30 @@ namespace OPMLCore.NET {
 
 
         private void readOpmlNodes(XmlDocument doc) {
-            foreach (XmlNode nodes in doc)
+            // Find the first 'opml' element node
+            XmlNode opmlNode = null;
+            foreach (XmlNode node in doc)
             {
-                if (nodes.Name.Equals("opml", StringComparison.CurrentCultureIgnoreCase))
+                if (node.NodeType == XmlNodeType.Element && node.Name == "opml")
                 {
-                    foreach (XmlNode childNode in nodes)
-                    {
+                    opmlNode = node;
+                    break;
+                }
+            }
+            if (opmlNode == null) return;
 
-                        if (childNode.Name.Equals("head", StringComparison.CurrentCultureIgnoreCase))
-                        {
-                            Head = new Head((XmlElement) childNode);
-                        }
-
-                        if (childNode.Name.Equals("body", StringComparison.CurrentCultureIgnoreCase))
-                        {
-                            Body = new Body((XmlElement) childNode);
-                        }
-                    }
+            // Loop through children of 'opml' node only once
+            foreach (XmlNode childNode in opmlNode.ChildNodes)
+            {
+                if (childNode.NodeType != XmlNodeType.Element) continue;
+                switch (childNode.Name)
+                {
+                    case "head":
+                        Head = new Head((XmlElement)childNode);
+                        break;
+                    case "body":
+                        Body = new Body((XmlElement)childNode);
+                        break;
                 }
             }
         }
