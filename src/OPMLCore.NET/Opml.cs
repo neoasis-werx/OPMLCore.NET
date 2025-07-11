@@ -7,9 +7,6 @@ namespace OPMLCore.NET {
     using static CommonUtils;
 
     public class Opml {
-
-        public static readonly CultureInfo MyCultureInfo = new("en-US");
-
         ///<summary>
         /// Version of OPML
         ///</summary>

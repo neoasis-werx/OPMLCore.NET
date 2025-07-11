@@ -73,6 +73,10 @@ namespace OPMLCore.NET {
         ///</summary>
         public string WindowRight { get; set; }
 
+
+        public string Source { get; set; }
+
+        public string Flavor { get; set; }
         ///<summary>
         /// Constructor
         ///</summary>
@@ -80,6 +84,8 @@ namespace OPMLCore.NET {
         {
 
         }
+
+        public IDictionary<string, string> OtherElements = new Dictionary<string, string>();
 
         ///<summary>
         /// Constructor
@@ -133,28 +139,27 @@ namespace OPMLCore.NET {
                         case "windowRight":
                             WindowRight = node.InnerText;
                             break;
+                        case "flavor":
+                            Flavor = node.InnerText;
+                            break;
+                        case "source":
+                            Source = node.InnerText;
+                            break;
+                        default:
+                            OtherElements.TryAdd(node.Name, node.InnerText);
+                            break;
                     }
                 }
             }
         }
 
-        private static DateTime? ParseDateTime(string value)
-        {
-            if (string.IsNullOrEmpty(value)) return null;
-            try { return DateTime.Parse(value, Opml.MyCultureInfo); }
-            catch { return null; }
-        }
+
         private static List<string> ParseExpansionState(string value)
         {
-            if (string.IsNullOrEmpty(value)) return new List<string>();
-            var items = value.Split(',');
-            var list = new List<string>();
-            foreach (var item in items)
-                if (!string.IsNullOrWhiteSpace(item))
-                    list.Add(item.Trim());
-            return list;
+            if (string.IsNullOrWhiteSpace(value)) return new List<string>();
+            // Use StringSplitOptions.RemoveEmptyEntries to avoid empty results
+            return [..value.Split([','], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)];
         }
-
 
 
         public override string ToString()
@@ -174,6 +179,10 @@ namespace OPMLCore.NET {
             buf.Append(GetNodeString("windowLeft", WindowLeft));
             buf.Append(GetNodeString("windowBottom", WindowBottom));
             buf.Append(GetNodeString("windowRight", WindowRight));
+            foreach (var element in OtherElements)
+            {
+                buf.Append(GetNodeString(element.Key, element.Value));
+            }
             buf.Append($"</head>{NewLine}");
             return buf.ToString();
         }

@@ -50,8 +50,8 @@ namespace OPMLCore.NET.Tests;
          Opml opml = new Opml(doc);
 
          Assert.That(opml.Head.Title, Is.EqualTo("mySubscriptions.opml"));
-         Assert.That(opml.Head.DateCreated, Is.EqualTo(DateTime.Parse("Sat, 18 Jun 2005 12:11:52 GMT", Opml.MyCultureInfo)));
-         Assert.That(opml.Head.DateModified, Is.EqualTo(DateTime.Parse("Tue, 02 Aug 2005 21:42:48 GMT", Opml.MyCultureInfo)));
+         Assert.That(opml.Head.DateCreated, Is.EqualTo(CommonUtils.ParseDateTime("Sat, 18 Jun 2005 12:11:52 GMT")));
+         Assert.That(opml.Head.DateModified, Is.EqualTo(CommonUtils.ParseDateTime("Tue, 02 Aug 2005 21:42:48 GMT")));
          Assert.That(opml.Head.OwnerName, Is.EqualTo("fnya"));
          Assert.That(opml.Head.OwnerEmail, Is.EqualTo("fnya@example.com"));
          Assert.That(opml.Head.OwnerId, Is.EqualTo("http://news.com.com/"));
@@ -68,15 +68,15 @@ namespace OPMLCore.NET.Tests;
              Assert.That(outline.Text, Is.EqualTo("CNET News.com"));
              Assert.That(outline.IsComment, Is.EqualTo("true"));
              Assert.That(outline.IsBreakpoint, Is.EqualTo("true"));
-             Assert.That(outline.Created, Is.EqualTo(DateTime.Parse("Tue, 02 Aug 2005 21:42:48 GMT", Opml.MyCultureInfo)));
+             Assert.That(outline.Created, Is.EqualTo(CommonUtils.ParseDateTime("Tue, 02 Aug 2005 21:42:48 GMT")));
              Assert.That(outline.Category, Is.EqualTo("/Harvard/Berkman,/Politics".Split(',')));
              Assert.That(outline.Description, Is.EqualTo("Tech news and business reports by CNET News.com."));
-             Assert.That(outline.HTMLUrl, Is.EqualTo("http://news.com.com/"));
+             Assert.That(outline.HtmlUrl, Is.EqualTo("http://news.com.com/"));
              Assert.That(outline.Language, Is.EqualTo("unknown"));
              Assert.That(outline.Title, Is.EqualTo("CNET News.com"));
              Assert.That(outline.Type, Is.EqualTo("rss"));
              Assert.That(outline.Version, Is.EqualTo("RSS2"));
-             Assert.That(outline.XMLUrl, Is.EqualTo("http://news.com.com/2547-1_3-0-5.xml"));
+             Assert.That(outline.XmlUrl, Is.EqualTo("http://news.com.com/2547-1_3-0-5.xml"));
          }
      }
 
@@ -109,8 +109,8 @@ namespace OPMLCore.NET.Tests;
          {
              foreach(var childOutline in outline.Outlines) {
                  Assert.That(childOutline.Text, Is.EqualTo("washingtonpost.com"));
-                 Assert.That(childOutline.HTMLUrl, Is.EqualTo("http://www.washingtonpost.com"));
-                 Assert.That(childOutline.XMLUrl, Is.EqualTo("http://www.washingtonpost.com/rss.xml"));
+                 Assert.That(childOutline.HtmlUrl, Is.EqualTo("http://www.washingtonpost.com"));
+                 Assert.That(childOutline.XmlUrl, Is.EqualTo("http://www.washingtonpost.com/rss.xml"));
              }
          }
      }
@@ -127,8 +127,8 @@ namespace OPMLCore.NET.Tests;
          Head head = new Head
          {
              Title = "mySubscriptions.opml",
-             DateCreated = DateTime.Parse("Sat, 18 Jun 2005 12:11:52 GMT", Opml.MyCultureInfo).ToUniversalTime(),
-             DateModified = DateTime.Parse("Tue, 02 Aug 2005 21:42:48 GMT", Opml.MyCultureInfo).ToUniversalTime(),
+             DateCreated = CommonUtils.ParseDateTime("Sat, 18 Jun 2005 12:11:52 GMT")?.ToUniversalTime(),
+             DateModified = CommonUtils.ParseDateTime("Tue, 02 Aug 2005 21:42:48 GMT")?.ToUniversalTime(),
              OwnerName = "fnya",
              OwnerEmail = "fnya@example.com",
              OwnerId = "http://news.com.com/",
@@ -152,17 +152,17 @@ namespace OPMLCore.NET.Tests;
              Text = "CNET News.com",
              IsComment = "true",
              IsBreakpoint = "true",
-             Created = DateTime.Parse("Tue, 02 Aug 2005 21:42:48 GMT", Opml.MyCultureInfo).ToUniversalTime()
+             Created = CommonUtils.ParseDateTime("Tue, 02 Aug 2005 21:42:48 GMT")?.ToUniversalTime()
          };
          outline.Category.Add("/Harvard/Berkman");
          outline.Category.Add("/Politics");
          outline.Description = "Tech news and business reports by CNET News.com.";
-         outline.HTMLUrl = "http://news.com.com/";
+         outline.HtmlUrl = "http://news.com.com/";
          outline.Language = "unknown";
          outline.Title = "CNET News.com";
          outline.Type = "rss";
          outline.Version = "RSS2";
-         outline.XMLUrl = "http://news.com.com/2547-1_3-0-5.xml";
+         outline.XmlUrl = "http://news.com.com/2547-1_3-0-5.xml";
 
          Body body = new Body();
          body.Outlines.Add(outline);
@@ -224,8 +224,8 @@ namespace OPMLCore.NET.Tests;
 
          Outline childOutline = new Outline();
          childOutline.Text = "CNET News.com";
-         childOutline.HTMLUrl = "http://news.com.com/";
-         childOutline.XMLUrl = "http://news.com.com/2547-1_3-0-5.xml";
+         childOutline.HtmlUrl = "http://news.com.com/";
+         childOutline.XmlUrl = "http://news.com.com/2547-1_3-0-5.xml";
 
          outline.Outlines.Add(childOutline);
 
@@ -262,13 +262,13 @@ namespace OPMLCore.NET.Tests;
          {
              //Output outline node
              Console.WriteLine(outline.Text);
-             Console.WriteLine(outline.XMLUrl);
+             Console.WriteLine(outline.XmlUrl);
 
              //output child's output node
              foreach (Outline childOutline in outline.Outlines)
              {
                  Console.WriteLine(childOutline.Text);
-                 Console.WriteLine(childOutline.XMLUrl);
+                 Console.WriteLine(childOutline.XmlUrl);
              }
          }
      }

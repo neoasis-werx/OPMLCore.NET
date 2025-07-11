@@ -6,8 +6,6 @@ using System.Collections.Generic;
 namespace OPMLCore.NET {
     public class Outline
     {
-
-
         ///<summary>
         /// Text of the XML file (required)
         ///</summary>
@@ -41,7 +39,7 @@ namespace OPMLCore.NET {
         ///<summary>
         /// HTML URL
         ///</summary>
-        public string HTMLUrl { get; set; }
+        public string HtmlUrl { get; set; }
 
         ///<summary>
         /// Language
@@ -67,7 +65,13 @@ namespace OPMLCore.NET {
         ///<summary>
         /// URL of the XML file
         ///</summary>
-        public string XMLUrl { get; set; }
+        public string XmlUrl { get; set; }
+
+
+        /// <summary>
+        /// DynaList flavor Attribute
+        /// </summary>
+        public string Note { get; set; }
 
         ///<summary>
         /// Outline list
@@ -95,12 +99,13 @@ namespace OPMLCore.NET {
             Created = GetDateTimeAttribute(element, "created");
             Category = GetCategoriesAttribute(element, "category");
             Description  = element.GetAttribute("description");
-            HTMLUrl = element.GetAttribute("htmlUrl");
+            HtmlUrl = element.GetAttribute("htmlUrl");
             Language = element.GetAttribute("language");
             Title = element.GetAttribute("title");
             Type = element.GetAttribute("type");
             Version = element.GetAttribute("version");
-            XMLUrl = element.GetAttribute("xmlUrl");
+            XmlUrl = element.GetAttribute("xmlUrl");
+            Note = element.GetAttribute("_note");
 
             if (element.HasChildNodes) {
                 foreach (XmlNode child in element.ChildNodes)
@@ -118,7 +123,7 @@ namespace OPMLCore.NET {
             string dt = element.GetAttribute(name);
 
             try {
-                return DateTime.Parse(dt, Opml.MyCultureInfo);
+                return DateTime.Parse(dt, CommonUtils.MyCultureInfo);
             } catch {
                 return null;
             }
@@ -145,12 +150,12 @@ namespace OPMLCore.NET {
             buf.Append(GetAttributeString("created", Created));
             buf.Append(GetAttributeString("category", Category));
             buf.Append(GetAttributeString("description", Description));
-            buf.Append(GetAttributeString("htmlUrl", HTMLUrl));
+            buf.Append(GetAttributeString("htmlUrl", HtmlUrl));
             buf.Append(GetAttributeString("language", Language));
             buf.Append(GetAttributeString("title", Title));
             buf.Append(GetAttributeString("type", Type));
             buf.Append(GetAttributeString("version", Version));
-            buf.Append(GetAttributeString("xmlUrl", XMLUrl));
+            buf.Append(GetAttributeString("xmlUrl", XmlUrl));
 
             if (Outlines.Count > 0)
             {
