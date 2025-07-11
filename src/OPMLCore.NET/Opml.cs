@@ -109,5 +109,52 @@ namespace OPMLCore.NET {
 
             return buf.ToString();
         }
+
+        /// <summary>
+        /// Returns an XDocument representing this OPML document and its children, using LINQ to XML.
+        /// </summary>
+        public XDocument ToXml()
+        {
+            var encoding = string.IsNullOrEmpty(Encoding) ? "UTF-8" : Encoding;
+            var version = string.IsNullOrEmpty(Version) ? "2.0" : Version;
+            var declaration = new XDeclaration("1.0", encoding, null);
+
+            var opmlElem = new XElement("opml");
+            opmlElem.SetAttributeValue("version", version);
+            foreach (var attr in OtherAttributes)
+            {
+                opmlElem.SetAttributeValue(attr.Key, attr.Value);
+            }
+            opmlElem.Add(Head.ToXml());
+            opmlElem.Add(Body.ToXml());
+
+            var doc = new XDocument(declaration, opmlElem);
+            return doc;
+        }
+
+        /// <summary>
+        /// Returns the XML string representation of this OPML document and its children, using LINQ to XML.
+        /// </summary>
+        public string ToXmlString(SaveOptions saveOptions = SaveOptions.DisableFormatting)
+        {
+            return ToXml().ToString(saveOptions);
+        }
+
+        /// <summary>
+        /// Loads an OPML document from a file path.
+        /// </summary>
+        public static Opml Load(string path)
+        {
+            var doc = XDocument.Load(path);
+            return new Opml(doc);
+        }
+
+        /// <summary>
+        /// Saves this OPML document to the specified file path using LINQ to XML.
+        /// </summary>
+        public void Save(string path, SaveOptions saveOptions = SaveOptions.DisableFormatting)
+        {
+            ToXml().Save(path, saveOptions);
+        }
     }
 }

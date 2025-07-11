@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Xml;
+using System.Xml.Linq;
 
 namespace OPMLCore.NET {
     using static CommonUtils;
@@ -209,6 +209,58 @@ namespace OPMLCore.NET {
             }
 
             return $"<{name}>{buf.Remove(buf.Length - 1, 1).ToString()}</{name}>{NewLine}";
+        }
+
+        /// <summary>
+        /// Returns an XElement representing this Head and its children, using LINQ to XML.
+        /// </summary>
+        public System.Xml.Linq.XElement ToXml()
+        {
+            var element = new System.Xml.Linq.XElement("head");
+            void AddElemString(string name, string value)
+            {
+                if (!string.IsNullOrEmpty(value))
+                    element.Add(new System.Xml.Linq.XElement(name, value));
+            }
+            void AddElemDate(string name, DateTime? value)
+            {
+                if (value != null)
+                    element.Add(new System.Xml.Linq.XElement(name, value?.ToString("R")));
+            }
+            void AddElemList(string name, List<string> value)
+            {
+                if (value != null && value.Count > 0)
+                    element.Add(new System.Xml.Linq.XElement(name, string.Join(",", value)));
+            }
+
+            AddElemString("title", Title);
+            AddElemDate("dateCreated", DateCreated);
+            AddElemDate("dateModified", DateModified);
+            AddElemString("ownerName", OwnerName);
+            AddElemString("ownerEmail", OwnerEmail);
+            AddElemString("ownerId", OwnerId);
+            AddElemString("docs", Docs);
+            AddElemList("expansionState", ExpansionState);
+            AddElemString("vertScrollState", VertScrollState);
+            AddElemString("windowTop", WindowTop);
+            AddElemString("windowLeft", WindowLeft);
+            AddElemString("windowBottom", WindowBottom);
+            AddElemString("windowRight", WindowRight);
+            AddElemString("flavor", Flavor);
+            AddElemString("source", Source);
+            foreach (var elementPair in OtherElements)
+            {
+                AddElemString(elementPair.Key, elementPair.Value);
+            }
+            return element;
+        }
+
+        /// <summary>
+        /// Returns the XML string representation of this Head and its children, using LINQ to XML.
+        /// </summary>
+        public string ToXmlString(SaveOptions saveOptions = SaveOptions.DisableFormatting)
+        {
+            return ToXml().ToString(saveOptions);
         }
     }
 }

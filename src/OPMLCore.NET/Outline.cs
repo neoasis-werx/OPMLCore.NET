@@ -229,5 +229,63 @@ namespace OPMLCore.NET {
 
             return $" {name}=\"{buf.Remove(buf.Length - 1, 1)}\"";
         }
+
+        /// <summary>
+        /// Returns an XElement representing this Outline and its children, using LINQ to XML.
+        /// </summary>
+        public System.Xml.Linq.XElement ToXml()
+        {
+            var element = new System.Xml.Linq.XElement("outline");
+
+            void AddAttrString(string name, string value)
+            {
+                if (!string.IsNullOrEmpty(value))
+                    element.SetAttributeValue(name, value);
+            }
+            void AddAttrDate(string name, DateTime? value)
+            {
+                if (value != null)
+                    element.SetAttributeValue(name, value?.ToString("R"));
+            }
+            void AddAttrList(string name, List<string> value)
+            {
+                if (value != null && value.Count > 0)
+                    element.SetAttributeValue(name, string.Join(",", value));
+            }
+
+            AddAttrString("text", Text);
+            AddAttrString("isComment", IsComment);
+            AddAttrString("isBreakpoint", IsBreakpoint);
+            AddAttrDate("created", Created);
+            AddAttrList("category", Category);
+            AddAttrString("description", Description);
+            AddAttrString("htmlUrl", HtmlUrl);
+            AddAttrString("language", Language);
+            AddAttrString("title", Title);
+            AddAttrString("type", Type);
+            AddAttrString("version", Version);
+            AddAttrString("xmlUrl", XmlUrl);
+            if (!string.IsNullOrEmpty(Note))
+                element.SetAttributeValue("_note", Note);
+            foreach (var attribute in OtherAttributes)
+            {
+                AddAttrString(attribute.Key, attribute.Value);
+            }
+
+            foreach (var outline in Outlines)
+            {
+                element.Add(outline.ToXml());
+            }
+
+            return element;
+        }
+
+        /// <summary>
+        /// Returns the XML string representation of this Outline and its children, using LINQ to XML.
+        /// </summary>
+        public string ToXmlString(SaveOptions saveOptions = SaveOptions.DisableFormatting)
+        {
+            return ToXml().ToString(saveOptions);
+        }
     }
 }
