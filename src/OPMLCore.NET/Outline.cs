@@ -78,6 +78,9 @@ namespace OPMLCore.NET {
         ///</summary>
         public List<Outline> Outlines { get; set; }  = new List<Outline>();
 
+
+        public IDictionary<string, string> OtherAttributes = new Dictionary<string, string>();
+
         ///<summary>
         /// Constructor
         ///</summary>
@@ -93,19 +96,55 @@ namespace OPMLCore.NET {
         /// <param name="element">element of Head</param>
         public Outline(XmlElement element)
         {
-            Text = element.GetAttribute("text");
-            IsComment = element.GetAttribute("isComment");
-            IsBreakpoint = element.GetAttribute("isBreakpoint");
-            Created = GetDateTimeAttribute(element, "created");
-            Category = GetCategoriesAttribute(element, "category");
-            Description  = element.GetAttribute("description");
-            HtmlUrl = element.GetAttribute("htmlUrl");
-            Language = element.GetAttribute("language");
-            Title = element.GetAttribute("title");
-            Type = element.GetAttribute("type");
-            Version = element.GetAttribute("version");
-            XmlUrl = element.GetAttribute("xmlUrl");
-            Note = element.GetAttribute("_note");
+            if (element == null) return;
+            foreach (XmlAttribute attr in element.Attributes)
+            {
+                switch (attr.Name)
+                {
+                    case "text":
+                        Text = attr.Value;
+                        break;
+                    case "isComment":
+                        IsComment = attr.Value;
+                        break;
+                    case "isBreakpoint":
+                        IsBreakpoint = attr.Value;
+                        break;
+                    case "created":
+                        Created = GetDateTimeAttribute(attr.Value);
+                        break;
+                    case "category":
+                        Category = GetCategoriesAttribute(attr.Value);
+                        break;
+                    case "description":
+                        Description = attr.Value;
+                        break;
+                    case "htmlUrl":
+                        HtmlUrl = attr.Value;
+                        break;
+                    case "language":
+                        Language = attr.Value;
+                        break;
+                    case "title":
+                        Title = attr.Value;
+                        break;
+                    case "type":
+                        Type = attr.Value;
+                        break;
+                    case "version":
+                        Version = attr.Value;
+                        break;
+                    case "xmlUrl":
+                        XmlUrl = attr.Value;
+                        break;
+                    case "_note":
+                        Note = attr.Value;
+                        break;
+                    default:
+                        OtherAttributes.TryAdd(attr.Name, attr.Value);
+                        break;
+                }
+            }
 
             if (element.HasChildNodes) {
                 foreach (XmlNode child in element.ChildNodes)
@@ -118,26 +157,18 @@ namespace OPMLCore.NET {
             }
         }
 
-        private static DateTime? GetDateTimeAttribute(XmlElement element, string name)
+        private static DateTime? GetDateTimeAttribute(string value)
         {
-            string dt = element.GetAttribute(name);
-
-            try {
-                return DateTime.Parse(dt, CommonUtils.MyCultureInfo);
-            } catch {
-                return null;
-            }
+            if (string.IsNullOrWhiteSpace(value)) return null;
+            if (DateTime.TryParse(value, CommonUtils.MyCultureInfo, System.Globalization.DateTimeStyles.None, out var result))
+                return result;
+            return null;
         }
 
-        private static List<string> GetCategoriesAttribute(XmlElement element, string name)
+        private static List<string> GetCategoriesAttribute(string value)
         {
-                List<string> list = new List<string>();
-                var items = element.GetAttribute(name).Split(',');
-                foreach(var item in items)
-                {
-                    list.Add(item.Trim());
-                }
-                return list;
+            if (string.IsNullOrWhiteSpace(value)) return new List<string>();
+            return new List<string>(value.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries));
         }
 
         public override string ToString()

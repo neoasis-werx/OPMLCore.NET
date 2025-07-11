@@ -1,9 +1,9 @@
-using System;
-using System.Globalization;
 using System.Text;
 using System.Xml;
+using System.Collections.Generic;
 
 namespace OPMLCore.NET {
+    using System;
     using static CommonUtils;
 
     public class Opml {
@@ -28,11 +28,15 @@ namespace OPMLCore.NET {
         public Body Body { get; set;} = new Body();
 
         ///<summary>
+        /// Other OPML attributes not explicitly handled
+        ///</summary>
+        public IDictionary<string, string> OtherAttributes { get; set; } = new Dictionary<string, string>();
+
+        ///<summary>
         /// Constructor
         ///</summary>
         public Opml()
         {
-
         }
 
         ///<summary>
@@ -43,20 +47,26 @@ namespace OPMLCore.NET {
         {
             var doc = new XmlDocument();
             doc.Load(location);
-            readOpmlNodes(doc);
+            ReadOpmlNodes(doc);
         }
 
-          ///<summary>
+        ///<summary>
         /// Constructor
         ///</summary>
         /// <param name="doc">XMLDocument of the OPML</param>
         public Opml(XmlDocument doc)
         {
-            readOpmlNodes(doc);
+            ReadOpmlNodes(doc);
         }
 
 
-        private void readOpmlNodes(XmlDocument doc) {
+        private void ReadOpmlNodes(XmlDocument doc) {
+            // Get encoding from XmlDocument if available
+            if (doc.FirstChild is XmlDeclaration decl && !string.IsNullOrEmpty(decl.Encoding))
+            {
+                Encoding = decl.Encoding.Equals("iso-8859-1", StringComparison.InvariantCultureIgnoreCase) ? "UTF-8" : decl.Encoding;
+            }
+
             // Find the first 'opml' element node
             XmlNode opmlNode = null;
             foreach (XmlNode node in doc)
@@ -68,6 +78,21 @@ namespace OPMLCore.NET {
                 }
             }
             if (opmlNode == null) return;
+
+            // Read attributes using a switch statement
+            if (opmlNode.Attributes != null)
+                foreach (XmlAttribute attr in opmlNode.Attributes)
+                {
+                    switch (attr.Name)
+                    {
+                        case "version":
+                            Version = attr.Value;
+                            break;
+                        default:
+                            OtherAttributes.TryAdd(attr.Name, attr.Value);
+                            break;
+                    }
+                }
 
             // Loop through children of 'opml' node only once
             foreach (XmlNode childNode in opmlNode.ChildNodes)
