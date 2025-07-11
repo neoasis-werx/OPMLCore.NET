@@ -45,9 +45,8 @@ namespace OPMLCore.NET.Tests;
          xml.Append("</body>");
          xml.Append("</opml>");
 
-         XmlDocument doc = new XmlDocument();
-         doc.LoadXml(xml.ToString());
-         Opml opml = new Opml(doc);
+         var xdoc = System.Xml.Linq.XDocument.Parse(xml.ToString());
+         Opml opml = new Opml(xdoc);
 
          Assert.That(opml.Head.Title, Is.EqualTo("mySubscriptions.opml"));
          Assert.That(opml.Head.DateCreated, Is.EqualTo(CommonUtils.ParseDateTime("Sat, 18 Jun 2005 12:11:52 GMT")));
@@ -101,11 +100,10 @@ namespace OPMLCore.NET.Tests;
          xml.Append("</body>");
          xml.Append("</opml>");
 
-         XmlDocument doc = new XmlDocument();
-         doc.LoadXml(xml.ToString());
-         Opml opml = new Opml(doc);
+         var xdoc2 = System.Xml.Linq.XDocument.Parse(xml.ToString());
+         Opml opml2 = new Opml(xdoc2);
 
-         foreach (var outline in opml.Body.Outlines)
+         foreach (var outline in opml2.Body.Outlines)
          {
              foreach(var childOutline in outline.Outlines) {
                  Assert.That(childOutline.Text, Is.EqualTo("washingtonpost.com"));

@@ -1,5 +1,5 @@
 using System.Text;
-using System.Xml;
+using System.Xml.Linq;
 using System.Collections.Generic;
 
 namespace OPMLCore.NET {
@@ -35,9 +35,7 @@ namespace OPMLCore.NET {
         ///<summary>
         /// Constructor
         ///</summary>
-        public Opml()
-        {
-        }
+        public Opml() { }
 
         ///<summary>
         /// Constructor
@@ -45,66 +43,54 @@ namespace OPMLCore.NET {
         /// <param name="location">Location of the OPML file</param>
         public Opml(string location)
         {
-            var doc = new XmlDocument();
-            doc.Load(location);
+            var doc = XDocument.Load(location);
             ReadOpmlNodes(doc);
         }
 
         ///<summary>
         /// Constructor
         ///</summary>
-        /// <param name="doc">XMLDocument of the OPML</param>
-        public Opml(XmlDocument doc)
+        /// <param name="doc">XDocument of the OPML</param>
+        public Opml(XDocument doc)
         {
             ReadOpmlNodes(doc);
         }
 
-
-        private void ReadOpmlNodes(XmlDocument doc) {
-            // Get encoding from XmlDocument if available
-            if (doc.FirstChild is XmlDeclaration decl && !string.IsNullOrEmpty(decl.Encoding))
+        private void ReadOpmlNodes(XDocument doc) {
+            // Get encoding from XDeclaration if available
+            if (doc.Declaration != null && !string.IsNullOrEmpty(doc.Declaration.Encoding))
             {
-                Encoding = decl.Encoding.Equals("iso-8859-1", StringComparison.InvariantCultureIgnoreCase) ? "UTF-8" : decl.Encoding;
+                Encoding = doc.Declaration.Encoding.Equals("iso-8859-1", StringComparison.InvariantCultureIgnoreCase) ? "UTF-8" : doc.Declaration.Encoding;
             }
 
-            // Find the first 'opml' element node
-            XmlNode opmlNode = null;
-            foreach (XmlNode node in doc)
-            {
-                if (node.NodeType == XmlNodeType.Element && node.Name == "opml")
-                {
-                    opmlNode = node;
-                    break;
-                }
-            }
-            if (opmlNode == null) return;
+            // Find the first 'opml' element
+            var opmlElement = doc.Root;
+            if (opmlElement == null || opmlElement.Name != "opml") return;
 
             // Read attributes using a switch statement
-            if (opmlNode.Attributes != null)
-                foreach (XmlAttribute attr in opmlNode.Attributes)
-                {
-                    switch (attr.Name)
-                    {
-                        case "version":
-                            Version = attr.Value;
-                            break;
-                        default:
-                            OtherAttributes.TryAdd(attr.Name, attr.Value);
-                            break;
-                    }
-                }
-
-            // Loop through children of 'opml' node only once
-            foreach (XmlNode childNode in opmlNode.ChildNodes)
+            foreach (var attr in opmlElement.Attributes())
             {
-                if (childNode.NodeType != XmlNodeType.Element) continue;
-                switch (childNode.Name)
+                switch (attr.Name.LocalName)
+                {
+                    case "version":
+                        Version = attr.Value;
+                        break;
+                    default:
+                        OtherAttributes.TryAdd(attr.Name.LocalName, attr.Value);
+                        break;
+                }
+            }
+
+            // Loop through children of 'opml' element only once
+            foreach (var child in opmlElement.Elements())
+            {
+                switch (child.Name.LocalName)
                 {
                     case "head":
-                        Head = new Head((XmlElement)childNode);
+                        Head = new Head(child);
                         break;
                     case "body":
-                        Body = new Body((XmlElement)childNode);
+                        Body = new Body(child);
                         break;
                 }
             }
@@ -123,6 +109,5 @@ namespace OPMLCore.NET {
 
             return buf.ToString();
         }
-
     }
 }

@@ -1,6 +1,4 @@
-using System;
 using System.Text;
-using System.Xml;
 using System.Collections.Generic;
 
 namespace OPMLCore.NET {
@@ -23,22 +21,19 @@ namespace OPMLCore.NET {
         }
 
         ///<summary>
-        /// Constructor
+        /// Constructor for LINQ to XML (XElement)
         ///</summary>
-        /// <param name="element">element of Body</param>
-        public Body(XmlElement element)
+        public Body(System.Xml.Linq.XElement element)
         {
-            if (element.Name == "body")
+            if (element.Name.LocalName == "body")
             {
-                foreach (XmlNode node in element.ChildNodes)
+                foreach (var node in element.Elements("outline"))
                 {
-                    if (node.Name == "outline")
-                    {
-                        Outlines.Add(new Outline((XmlElement)node));
-                    }
+                    Outlines.Add(new Outline(node));
                 }
             }
         }
+
 
         public override string ToString() {
             StringBuilder buf = new StringBuilder();

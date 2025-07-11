@@ -2,6 +2,7 @@ using System;
 using System.Text;
 using System.Xml;
 using System.Collections.Generic;
+using System.Xml.Linq;
 
 namespace OPMLCore.NET {
     public class Outline
@@ -79,7 +80,7 @@ namespace OPMLCore.NET {
         public List<Outline> Outlines { get; set; }  = new List<Outline>();
 
 
-        public IDictionary<string, string> OtherAttributes = new Dictionary<string, string>();
+        public IDictionary<string, string> OtherAttributes { get; } = new Dictionary<string, string>();
 
         ///<summary>
         /// Constructor
@@ -91,15 +92,15 @@ namespace OPMLCore.NET {
 
 
         ///<summary>
-        /// Constructor
+        /// Constructor for LINQ to XML (XElement)
         ///</summary>
-        /// <param name="element">element of Head</param>
-        public Outline(XmlElement element)
+        /// <param name="element">XElement representing an <outline> node</param>
+        public Outline(System.Xml.Linq.XElement element)
         {
             if (element == null) return;
-            foreach (XmlAttribute attr in element.Attributes)
+            foreach (var attr in element.Attributes())
             {
-                switch (attr.Name)
+                switch (attr.Name.LocalName)
                 {
                     case "text":
                         Text = attr.Value;
@@ -141,22 +142,16 @@ namespace OPMLCore.NET {
                         Note = attr.Value;
                         break;
                     default:
-                        OtherAttributes.TryAdd(attr.Name, attr.Value);
+                        OtherAttributes.TryAdd(attr.Name.LocalName, attr.Value);
                         break;
                 }
             }
 
-            if (element.HasChildNodes) {
-                foreach (XmlNode child in element.ChildNodes)
-                {
-                    if (child.Name == "outline")
-                    {
-                        Outlines.Add(new Outline((XmlElement) child));
-                    }
-                }
+            foreach (var child in element.Elements("outline"))
+            {
+                Outlines.Add(new Outline(child));
             }
         }
-
 
         private static List<string> GetCategoriesAttribute(string value)
         {

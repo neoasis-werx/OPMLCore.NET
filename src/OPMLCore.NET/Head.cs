@@ -77,82 +77,79 @@ namespace OPMLCore.NET {
         public string Source { get; set; }
 
         public string Flavor { get; set; }
+
+        public IDictionary<string, string> OtherElements { get; } = new Dictionary<string, string>();
+
         ///<summary>
         /// Constructor
         ///</summary>
         public Head()
         {
-
         }
 
-        public IDictionary<string, string> OtherElements = new Dictionary<string, string>();
-
-        ///<summary>
-        /// Constructor
-        ///</summary>
-        /// <param name="element">element of Head</param>
-        public Head(XmlElement element)
+        /// <summary>
+        /// Constructor for LINQ to XML (XElement)
+        /// </summary>
+        public Head(System.Xml.Linq.XElement element)
         {
-            if (element.Name == "head")
+            if (element.Name.LocalName == "head")
             {
-                foreach (XmlNode node in element.ChildNodes)
+                foreach (var node in element.Elements())
                 {
-                    if (node.NodeType != XmlNodeType.Element) continue;
-                    switch (node.Name)
+                    switch (node.Name.LocalName)
                     {
                         case "title":
-                            Title = node.InnerText;
+                            Title = node.Value;
                             break;
                         case "dateCreated":
-                            DateCreated = ParseDateTime(node.InnerText);
+                            DateCreated = ParseDateTime(node.Value);
                             break;
                         case "dateModified":
-                            DateModified = ParseDateTime(node.InnerText);
+                            DateModified = ParseDateTime(node.Value);
                             break;
                         case "ownerName":
-                            OwnerName = node.InnerText;
+                            OwnerName = node.Value;
                             break;
                         case "ownerEmail":
-                            OwnerEmail = node.InnerText;
+                            OwnerEmail = node.Value;
                             break;
                         case "ownerId":
-                            OwnerId = node.InnerText;
+                            OwnerId = node.Value;
                             break;
                         case "docs":
-                            Docs = node.InnerText;
+                            Docs = node.Value;
                             break;
                         case "expansionState":
-                            ExpansionState = ParseExpansionState(node.InnerText);
+                            ExpansionState = ParseExpansionState(node.Value);
                             break;
                         case "vertScrollState":
-                            VertScrollState = node.InnerText;
+                            VertScrollState = node.Value;
                             break;
                         case "windowTop":
-                            WindowTop = node.InnerText;
+                            WindowTop = node.Value;
                             break;
                         case "windowLeft":
-                            WindowLeft = node.InnerText;
+                            WindowLeft = node.Value;
                             break;
                         case "windowBottom":
-                            WindowBottom = node.InnerText;
+                            WindowBottom = node.Value;
                             break;
                         case "windowRight":
-                            WindowRight = node.InnerText;
+                            WindowRight = node.Value;
                             break;
                         case "flavor":
-                            Flavor = node.InnerText;
+                            Flavor = node.Value;
                             break;
                         case "source":
-                            Source = node.InnerText;
+                            Source = node.Value;
                             break;
                         default:
-                            OtherElements.TryAdd(node.Name, node.InnerText);
+                            OtherElements.TryAdd(node.Name.LocalName, node.Value);
                             break;
                     }
                 }
             }
         }
-
 
         private static List<string> ParseExpansionState(string value)
         {
