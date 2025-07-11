@@ -159,19 +159,8 @@ namespace OPMLCore.NET.Tests
             Opml opml = new Opml("C:\\Users\\Deerwood McCord\\OneDrive - Craneware\\Desktop\\CHI Product Containment.opml");
 
             Assert.That(opml, Is.Not.Null);
-            foreach (Outline outline in opml.Body.Outlines)
-            {
-                //Output outline node
-                Console.WriteLine(outline.Text);
-                Console.WriteLine(outline.XmlUrl);
 
-                //output child's output node
-                foreach (Outline childOutline in outline.Outlines)
-                {
-                    Console.WriteLine(childOutline.Text);
-                    Console.WriteLine(childOutline.XmlUrl);
-                }
-            }
+            CommonUtils.TraverseOpmlOutline(opml, CommonUtils.PrintEventAction);
         }
     }
 }

@@ -15,14 +15,9 @@ namespace OPMLCore.NET.Tests
             root.Outlines.Add(child2);
 
             // Act: traverse and print indented .Text and path
-            //CommonUtils.TraverseOutlineDepthFirst(root, (outline, level, path) =>
-            //{
-            //    var indent = new string(' ', level * 2);
-            //    Console.WriteLine($"{indent}{outline.Text} (Level: {level}, Path: {path})");
-            //});
 
             CommonUtils.TraverseOutlineDepthFirst(root, CommonUtils.PrintAction);
-
+            Assert.Pass();
 
             // No Assert: this test is for demonstration/visual verification
         }
@@ -41,7 +36,7 @@ namespace OPMLCore.NET.Tests
 
             // Act: traverse and print indented .Text and path using TraversalEvent
             CommonUtils.TraverseOutlineDepthFirst(root, CommonUtils.PrintEventAction);
-
+            Assert.Pass();
             // No Assert: this test is for demonstration/visual verification
         }
     }

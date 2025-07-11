@@ -58,6 +58,19 @@ public static class CommonUtils
         }
     }
 
+    /// <summary>
+    /// Traverses all Outline entries in the Body of the given OPML document, invoking the action for each node as a TraversalEvent.
+    /// </summary>
+    public static void TraverseOpmlOutline(Opml opml, Action<TraversalEvent> action)
+    {
+        if (opml?.Body?.Outlines == null || action == null) return;
+
+        foreach (var outline in opml.Body.Outlines)
+        {
+            TraverseOutlineDepthFirst(outline, action);
+        }
+    }
+
     public class TraversalEvent
     {
         public Outline Outline { get; set; }
