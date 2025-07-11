@@ -4,6 +4,8 @@ using System.Text;
 using System.Xml;
 
 namespace OPMLCore.NET {
+    using static CommonUtils;
+
     public class Opml {
 
         public static readonly CultureInfo MyCultureInfo = new("en-US");
@@ -42,7 +44,7 @@ namespace OPMLCore.NET {
         /// <param name="location">Location of the OPML file</param>
         public Opml(string location)
         {
-            XmlDocument doc = new XmlDocument();
+            var doc = new XmlDocument();
             doc.Load(location);
             readOpmlNodes(doc);
         }
@@ -88,11 +90,11 @@ namespace OPMLCore.NET {
 
         public override string ToString()
         {
-            StringBuilder buf = new StringBuilder();
-            String ecoding = string.IsNullOrEmpty(Encoding)?"UTF-8":Encoding;
-            buf.Append($"<?xml version=\"1.0\" encoding=\"{ecoding}\" ?>\r\n");
-            String version = string.IsNullOrEmpty(Version)?"2.0":Version;
-            buf.Append($"<opml version=\"{version}\">\r\n");
+            var buf = new StringBuilder();
+            var encoding = string.IsNullOrEmpty(Encoding)?"UTF-8":Encoding;
+            buf.Append($"<?xml version=\"1.0\" encoding=\"{encoding}\" ?>{NewLine}");
+            var version = string.IsNullOrEmpty(Version)?"2.0":Version;
+            buf.Append($"<opml version=\"{version}\">{NewLine}");
             buf.Append(Head.ToString());
             buf.Append(Body.ToString());
             buf.Append("</opml>");

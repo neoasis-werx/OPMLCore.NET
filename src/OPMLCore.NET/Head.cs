@@ -4,6 +4,8 @@ using System.Text;
 using System.Xml;
 
 namespace OPMLCore.NET {
+    using static CommonUtils;
+
     public class Head
     {
         ///<summary>
@@ -153,10 +155,12 @@ namespace OPMLCore.NET {
             return list;
         }
 
+
+
         public override string ToString()
         {
             StringBuilder buf = new StringBuilder();
-            buf.Append("<head>\r\n");
+            buf.Append($"<head>{NewLine}");
             buf.Append(GetNodeString("title", Title));
             buf.Append(GetNodeString("dateCreated", DateCreated));
             buf.Append(GetNodeString("dateModified", DateModified));
@@ -170,17 +174,19 @@ namespace OPMLCore.NET {
             buf.Append(GetNodeString("windowLeft", WindowLeft));
             buf.Append(GetNodeString("windowBottom", WindowBottom));
             buf.Append(GetNodeString("windowRight", WindowRight));
-            buf.Append("</head>\r\n");
+            buf.Append($"</head>{NewLine}");
             return buf.ToString();
         }
 
+
+
         private static string GetNodeString(string name, string value)
         {
-            return string.IsNullOrEmpty(value) ? string.Empty : $"<{name}>{value}</{name}>\r\n";
+            return string.IsNullOrEmpty(value) ? string.Empty : $"<{name}>{value}</{name}>{NewLine}";
         }
         private static string GetNodeString(string name, DateTime? value)
         {
-            return value == null ? string.Empty : $"<{name}>{value?.ToString("R")}</{name}>\r\n";
+            return value == null ? string.Empty : $"<{name}>{value?.ToString("R")}</{name}>{NewLine}";
         }
 
         private static string GetNodeString(string name, List<string> value)
@@ -196,7 +202,7 @@ namespace OPMLCore.NET {
                 buf.Append(",");
             }
 
-            return $"<{name}>{buf.Remove(buf.Length - 1, 1).ToString()}</{name}>\r\n";
+            return $"<{name}>{buf.Remove(buf.Length - 1, 1).ToString()}</{name}>{NewLine}";
         }
     }
 }

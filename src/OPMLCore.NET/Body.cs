@@ -4,6 +4,7 @@ using System.Xml;
 using System.Collections.Generic;
 
 namespace OPMLCore.NET {
+    using static CommonUtils;
 
 
     public class Body
@@ -41,12 +42,12 @@ namespace OPMLCore.NET {
 
         public override string ToString() {
             StringBuilder buf = new StringBuilder();
-            buf.Append("<body>\r\n");
+            buf.Append($"<body>{NewLine}");
             foreach (Outline outline in Outlines)
             {
                 buf.Append(outline);
             }
-            buf.Append("</body>\r\n");
+            buf.Append($"</body>{NewLine}");
 
             return buf.ToString();
         }
