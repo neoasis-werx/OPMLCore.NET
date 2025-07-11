@@ -9,7 +9,7 @@ namespace OPMLCore.NET.Tests;
      [Test]
      public void NormalTest()
      {
-         StringBuilder xml = new StringBuilder();
+         var xml = new StringBuilder();
          xml.Append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>");
          xml.Append("<opml version=\"2.0\">");
          xml.Append("<head>");

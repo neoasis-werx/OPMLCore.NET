@@ -1,11 +1,17 @@
 # OPMLCore.NET
-OPMLCore.NET is OPML Parser which easy to use for .NET Core Applications.
+
+OPMLCore.NET is OPML ([opml.org](https://opml.org/)) Parser which easy to use for .NET Core Applications.
+
+**Reference Links**
+
+- [OPML 2.0 spec](https://opml.org/spec2.opml)
+- [OPML Editor home](https://home.opml.org/)
 
 It is written in C# and with Visual Studio Code.
 
 It supports .NET 8.0
 
-# Setting
+## Setting
 
 You shoud add project refference to your project.
 
@@ -18,7 +24,7 @@ The below is sample `.csproj` which is added project refference.
 ```
 And then `dotnet restore`.
 
-# Usage
+## Usage
  How to use is below.
 
 ```
@@ -44,5 +50,5 @@ foreach (Outline outline in opml.Body.Outlines)
 
 For more detail, show test code or source code.
 
-# License
+## License
 Lisense is MIT License.
