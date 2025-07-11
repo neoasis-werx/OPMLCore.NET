@@ -1,11 +1,7 @@
-using System.Text;
 using System.Collections.Generic;
 using System.Xml.Linq;
 
 namespace OPMLCore.NET {
-    using static CommonUtils;
-
-
     public class Body
     {
         ///<summary>
@@ -24,7 +20,7 @@ namespace OPMLCore.NET {
         ///<summary>
         /// Constructor for LINQ to XML (XElement)
         ///</summary>
-        public Body(System.Xml.Linq.XElement element)
+        public Body(XElement element)
         {
             if (element.Name.LocalName == "body")
             {
@@ -36,24 +32,17 @@ namespace OPMLCore.NET {
         }
 
 
-        public override string ToString() {
-            StringBuilder buf = new StringBuilder();
-            buf.Append($"<body>{NewLine}");
-            foreach (Outline outline in Outlines)
-            {
-                buf.Append(outline);
-            }
-            buf.Append($"</body>{NewLine}");
-
-            return buf.ToString();
+        public override string ToString()
+        {
+            return ToXmlString(SaveOptions.None);
         }
 
         /// <summary>
         /// Returns an XElement representing this Body and its children, using LINQ to XML.
         /// </summary>
-        public System.Xml.Linq.XElement ToXml()
+        public XElement ToXml()
         {
-            var element = new System.Xml.Linq.XElement("body");
+            var element = new XElement("body");
             foreach (var outline in Outlines)
             {
                 element.Add(outline.ToXml());

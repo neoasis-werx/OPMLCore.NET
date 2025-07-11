@@ -1,10 +1,8 @@
-using System.Text;
 using System.Xml.Linq;
 using System.Collections.Generic;
 
 namespace OPMLCore.NET {
     using System;
-    using static CommonUtils;
 
     public class Opml {
         ///<summary>
@@ -98,16 +96,7 @@ namespace OPMLCore.NET {
 
         public override string ToString()
         {
-            var buf = new StringBuilder();
-            var encoding = string.IsNullOrEmpty(Encoding)?"UTF-8":Encoding;
-            buf.Append($"<?xml version=\"1.0\" encoding=\"{encoding}\" ?>{NewLine}");
-            var version = string.IsNullOrEmpty(Version)?"2.0":Version;
-            buf.Append($"<opml version=\"{version}\">{NewLine}");
-            buf.Append(Head.ToString());
-            buf.Append(Body.ToString());
-            buf.Append("</opml>");
-
-            return buf.ToString();
+            return ToXmlString(SaveOptions.None);
         }
 
         /// <summary>
@@ -143,9 +132,9 @@ namespace OPMLCore.NET {
         /// <summary>
         /// Loads an OPML document from a file path.
         /// </summary>
-        public static Opml Load(string path)
+        public static Opml Load(string path,LoadOptions loadOptions = LoadOptions.None)
         {
-            var doc = XDocument.Load(path);
+            var doc = XDocument.Load(path, loadOptions);
             return new Opml(doc);
         }
 

@@ -1,6 +1,4 @@
 using System;
-using System.Text;
-using System.Xml;
 using System.Collections.Generic;
 using System.Xml.Linq;
 
@@ -94,8 +92,8 @@ namespace OPMLCore.NET {
         ///<summary>
         /// Constructor for LINQ to XML (XElement)
         ///</summary>
-        /// <param name="element">XElement representing an <outline> node</param>
-        public Outline(System.Xml.Linq.XElement element)
+        /// <param name="element">XElement representing an outline node</param>
+        public Outline(XElement element)
         {
             if (element == null) return;
             foreach (var attr in element.Attributes())
@@ -161,97 +159,15 @@ namespace OPMLCore.NET {
 
         public override string ToString()
         {
-            StringBuilder buf = new StringBuilder();
-            buf.Append("<outline");
-            buf.Append(GetAttributeString("text", Text));
-            buf.Append(GetAttributeString("isComment", IsComment));
-            buf.Append(GetAttributeString("isBreakpoint", IsBreakpoint));
-            buf.Append(GetAttributeString("created", Created));
-            buf.Append(GetAttributeString("category", Category));
-            buf.Append(GetAttributeString("description", Description));
-            buf.Append(GetAttributeString("htmlUrl", HtmlUrl));
-            buf.Append(GetAttributeString("language", Language));
-            buf.Append(GetAttributeString("title", Title));
-            buf.Append(GetAttributeString("type", Type));
-            buf.Append(GetAttributeString("version", Version));
-            buf.Append(GetAttributeString("xmlUrl", XmlUrl));
-            foreach (var attribute in OtherAttributes)
-            {
-                buf.Append(GetAttributeString(attribute.Key, attribute.Value));
-            }
-
-            if (Outlines.Count > 0)
-            {
-                buf.Append(">\r\n");
-                foreach (Outline outline in Outlines)
-                {
-                    buf.Append(outline);
-                }
-                buf.Append("</outline>\r\n");
-            } else {
-                buf.Append(" />\r\n");
-            }
-            return buf.ToString();
-        }
-
-        private static string GetAttributeString(string name, string value)
-        {
-            if (string.IsNullOrEmpty(value))
-            {
-                return string.Empty;
-            } else {
-                return $" {name}=\"{value}\"";
-            }
-        }
-
-        private static string GetAttributeString(string name, DateTime? value)
-        {
-            if (value == null)
-            {
-                return string.Empty;
-            } else {
-                return $" {name}=\"{value?.ToString("R")}\"";
-            }
-        }
-
-        private static string GetAttributeString(string name, List<string> value)
-        {
-            if (value.Count == 0) {
-                return string.Empty;
-            }
-
-            StringBuilder buf = new StringBuilder();
-            foreach (var item in value)
-            {
-                buf.Append(item);
-                buf.Append(",");
-            }
-
-            return $" {name}=\"{buf.Remove(buf.Length - 1, 1)}\"";
+            return ToXmlString(SaveOptions.None);
         }
 
         /// <summary>
         /// Returns an XElement representing this Outline and its children, using LINQ to XML.
         /// </summary>
-        public System.Xml.Linq.XElement ToXml()
+        public XElement ToXml()
         {
-            var element = new System.Xml.Linq.XElement("outline");
-
-            void AddAttrString(string name, string value)
-            {
-                if (!string.IsNullOrEmpty(value))
-                    element.SetAttributeValue(name, value);
-            }
-            void AddAttrDate(string name, DateTime? value)
-            {
-                if (value != null)
-                    element.SetAttributeValue(name, value?.ToString("R"));
-            }
-            void AddAttrList(string name, List<string> value)
-            {
-                if (value != null && value.Count > 0)
-                    element.SetAttributeValue(name, string.Join(",", value));
-            }
+            var element = new XElement("outline");
 
             AddAttrString("text", Text);
             AddAttrString("isComment", IsComment);
@@ -278,6 +194,24 @@ namespace OPMLCore.NET {
             }
 
             return element;
+
+            void AddAttrString(string name, string value)
+            {
+                if (!string.IsNullOrEmpty(value))
+                    element.SetAttributeValue(name, value);
+            }
+
+            void AddAttrDate(string name, DateTime? value)
+            {
+                if (value != null)
+                    element.SetAttributeValue(name, value.Value.ToString("R"));
+            }
+
+            void AddAttrList(string name, List<string> value)
+            {
+                if (value is { Count: > 0 })
+                    element.SetAttributeValue(name, string.Join(",", value));
+            }
         }
 
         /// <summary>

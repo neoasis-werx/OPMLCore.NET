@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Xml.Linq;
 
 namespace OPMLCore.NET {
@@ -90,7 +89,7 @@ namespace OPMLCore.NET {
         /// <summary>
         /// Constructor for LINQ to XML (XElement)
         /// </summary>
-        public Head(System.Xml.Linq.XElement element)
+        public Head(XElement element)
         {
             if (element.Name.LocalName == "head")
             {
@@ -161,77 +160,15 @@ namespace OPMLCore.NET {
 
         public override string ToString()
         {
-            StringBuilder buf = new StringBuilder();
-            buf.Append($"<head>{NewLine}");
-            buf.Append(GetNodeString("title", Title));
-            buf.Append(GetNodeString("dateCreated", DateCreated));
-            buf.Append(GetNodeString("dateModified", DateModified));
-            buf.Append(GetNodeString("ownerName", OwnerName));
-            buf.Append(GetNodeString("ownerEmail", OwnerEmail));
-            buf.Append(GetNodeString("ownerId", OwnerId));
-            buf.Append(GetNodeString("docs", Docs));
-            buf.Append(GetNodeString("expansionState", ExpansionState));
-            buf.Append(GetNodeString("vertScrollState", VertScrollState));
-            buf.Append(GetNodeString("windowTop", WindowTop));
-            buf.Append(GetNodeString("windowLeft", WindowLeft));
-            buf.Append(GetNodeString("windowBottom", WindowBottom));
-            buf.Append(GetNodeString("windowRight", WindowRight));
-            foreach (var element in OtherElements)
-            {
-                buf.Append(GetNodeString(element.Key, element.Value));
-            }
-            buf.Append($"</head>{NewLine}");
-            return buf.ToString();
-        }
-
-
-
-        private static string GetNodeString(string name, string value)
-        {
-            return string.IsNullOrEmpty(value) ? string.Empty : $"<{name}>{value}</{name}>{NewLine}";
-        }
-        private static string GetNodeString(string name, DateTime? value)
-        {
-            return value == null ? string.Empty : $"<{name}>{value?.ToString("R")}</{name}>{NewLine}";
-        }
-
-        private static string GetNodeString(string name, List<string> value)
-        {
-            if (value.Count == 0) {
-                return string.Empty;
-            }
-
-            var buf = new StringBuilder();
-            foreach (var item in value)
-            {
-                buf.Append(item);
-                buf.Append(",");
-            }
-
-            return $"<{name}>{buf.Remove(buf.Length - 1, 1).ToString()}</{name}>{NewLine}";
+            return ToXmlString(SaveOptions.None);
         }
 
         /// <summary>
         /// Returns an XElement representing this Head and its children, using LINQ to XML.
         /// </summary>
-        public System.Xml.Linq.XElement ToXml()
+        public XElement ToXml()
         {
-            var element = new System.Xml.Linq.XElement("head");
-            void AddElemString(string name, string value)
-            {
-                if (!string.IsNullOrEmpty(value))
-                    element.Add(new System.Xml.Linq.XElement(name, value));
-            }
-            void AddElemDate(string name, DateTime? value)
-            {
-                if (value != null)
-                    element.Add(new System.Xml.Linq.XElement(name, value?.ToString("R")));
-            }
-            void AddElemList(string name, List<string> value)
-            {
-                if (value != null && value.Count > 0)
-                    element.Add(new System.Xml.Linq.XElement(name, string.Join(",", value)));
-            }
+            var element = new XElement("head");
 
             AddElemString("title", Title);
             AddElemDate("dateCreated", DateCreated);
@@ -253,6 +190,24 @@ namespace OPMLCore.NET {
                 AddElemString(elementPair.Key, elementPair.Value);
             }
             return element;
+
+            void AddElemString(string name, string value)
+            {
+                if (!string.IsNullOrEmpty(value))
+                    element.Add(new XElement(name, value));
+            }
+
+            void AddElemDate(string name, DateTime? value)
+            {
+                if (value != null)
+                    element.Add(new XElement(name, value.Value.ToString("R")));
+            }
+
+            void AddElemList(string name, List<string> value)
+            {
+                if (value != null && value.Count > 0)
+                    element.Add(new XElement(name, string.Join(",", value)));
+            }
         }
 
         /// <summary>
