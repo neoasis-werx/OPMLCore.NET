@@ -7,7 +7,6 @@ public static class CommonUtils
 {
     public static readonly CultureInfo MyCultureInfo = new("en-US");
 
-
     public static DateTime? ParseDateTime(string value)
     {
         if (string.IsNullOrWhiteSpace(value)) return null;
@@ -36,16 +35,10 @@ public static class CommonUtils
         }
     }
 
-    public class TraversalEvent
-    {
-        public Outline Outline { get; set; }
-        public int Level { get; set; }
-        public string Path { get; set; }
-    }
-
     /// <summary>
     /// Performs a depth-first in-order traversal of the Outline tree, applying the given action to each node, using a TraversalEvent parameter.
     /// </summary>
+    /// <exception cref="Exception">A delegate callback throws an exception.</exception>
     public static void TraverseOutlineDepthFirst(Outline outline, Action<TraversalEvent> action, int level = 0, string path = "")
     {
         if (outline == null || action == null) return;
@@ -63,6 +56,13 @@ public static class CommonUtils
         {
             TraverseOutlineDepthFirst(child, action, level + 1, currentPath);
         }
+    }
+
+    public class TraversalEvent
+    {
+        public Outline Outline { get; set; }
+        public int Level { get; set; }
+        public string Path { get; set; }
     }
 
     public static void PrintAction(Outline outline, int level, string path)
