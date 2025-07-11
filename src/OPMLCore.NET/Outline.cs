@@ -111,7 +111,7 @@ namespace OPMLCore.NET {
                         IsBreakpoint = attr.Value;
                         break;
                     case "created":
-                        Created = GetDateTimeAttribute(attr.Value);
+                        Created = CommonUtils.ParseDateTime(attr.Value);
                         break;
                     case "category":
                         Category = GetCategoriesAttribute(attr.Value);
@@ -157,13 +157,6 @@ namespace OPMLCore.NET {
             }
         }
 
-        private static DateTime? GetDateTimeAttribute(string value)
-        {
-            if (string.IsNullOrWhiteSpace(value)) return null;
-            if (DateTime.TryParse(value, CommonUtils.MyCultureInfo, System.Globalization.DateTimeStyles.None, out var result))
-                return result;
-            return null;
-        }
 
         private static List<string> GetCategoriesAttribute(string value)
         {
@@ -187,6 +180,10 @@ namespace OPMLCore.NET {
             buf.Append(GetAttributeString("type", Type));
             buf.Append(GetAttributeString("version", Version));
             buf.Append(GetAttributeString("xmlUrl", XmlUrl));
+            foreach (var attribute in OtherAttributes)
+            {
+                buf.Append(GetAttributeString(attribute.Key, attribute.Value));
+            }
 
             if (Outlines.Count > 0)
             {
